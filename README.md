@@ -22,6 +22,42 @@ This fork keeps the original behavior unchanged by default but adds an option fo
 
 **Maintenance:** this fork tracks the upstream extension and only adds the self-hosted toggle plus the matching permission/UI plumbing. Bug reports specific to this fork should go to [lu920115/omnivore-list-popup/issues](https://github.com/lu920115/omnivore-list-popup/issues); reports applicable to the original extension should be sent upstream to [herrherrmann/omnivore-list-popup](https://github.com/herrherrmann/omnivore-list-popup/issues).
 
+See [Configuring the self-hosted API](#configuring-the-self-hosted-api) below for how to point the extension at your own backend.
+
+## Configuring the self-hosted API
+
+If you run your own Omnivore-compatible backend, configure the extension like this:
+
+1. Open the extension options page (extension icon → right-click → "Extension options", or via `chrome://extensions/` → "Extension options").
+2. Under **⚠️ Advanced options → API source**, select **Custom (self-hosted)**. The "Custom Omnivore API URL" field will appear.
+3. In **Custom Omnivore API URL**, enter the **full GraphQL endpoint** — *not just the host*. The path is required.
+4. Click **Save**. (The Save button stays disabled until the URL is non-empty.)
+5. Click the extension icon to open the popup. You should see your library load.
+
+### URL format
+
+The URL **must include the `/api/graphql` path**. A bare host like `https://your-host.example.com` (or with a port like `https://your-host.example.com:10444`) will not work — the request will hit the wrong path and fail.
+
+| ❌ Wrong                                       | ✅ Correct                                                  |
+| --------------------------------------------- | ---------------------------------------------------------- |
+| `https://your-host.example.com`               | `https://your-host.example.com/api/graphql`                |
+| `https://your-host.example.com:10444`         | `https://your-host.example.com:10444/api/graphql`          |
+| `https://your-host.example.com/api/graphq1`   | `https://your-host.example.com/api/graphql` (lowercase L!) |
+
+The official endpoint is `https://api-prod.omnivore.app/api/graphql` — follow the same path convention for your own deployment unless you've customized it.
+
+### Things to check if it still doesn't work
+
+- **CORS.** Your backend must allow requests from the extension's origin. The simplest config returns `Access-Control-Allow-Origin: *` plus `Access-Control-Allow-Headers: Authorization, Content-Type` and `Access-Control-Allow-Methods: POST, OPTIONS` for the GraphQL endpoint. If you reverse-proxy with nginx, add these via `add_header`.
+- **HTTPS certificate.** Chrome rejects fetches to hosts with invalid / self-signed certs. Use a real cert (Let's Encrypt, ZeroSSL, your own CA already trusted by your OS).
+- **Non-standard port.** Ports other than 443 are fine as long as the certificate is valid for the host and the port is reachable from your machine.
+- **API key.** Your self-hosted backend may use a different format for the `Authorization` header than the upstream `Bearer`-less token. If your backend logs return 401, check what format it expects.
+- **DevTools.** Right-click inside the popup → "Inspect" → Network tab. Re-open the popup, find the POST to your GraphQL endpoint. Check the status code and response body — it will usually tell you whether the issue is CORS, auth, or routing.
+
+### Switching back to the official API
+
+Open the options page, switch **API source** back to **Official**, click Save. The "Custom Omnivore API URL" field will be hidden and ignored.
+
 ## Installation & Usage
 
 [![Get the Add-on for Firefox](docs/share-badge-firefox.png)](https://addons.mozilla.org/firefox/addon/omnivore-list-popup/)
