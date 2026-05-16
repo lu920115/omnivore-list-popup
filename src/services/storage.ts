@@ -2,10 +2,14 @@ import browser from 'webextension-polyfill'
 
 export type SettingKey = keyof typeof defaultSettings
 export type UiOptions = (typeof defaultSettings)['uiOptions']
+export type ApiSource = 'official' | 'custom'
+
+export const OFFICIAL_API_URL = 'https://api-prod.omnivore.app/api/graphql'
 
 export const defaultSettings = {
 	apiKey: '',
-	apiUrl: 'https://api-prod.omnivore.app/api/graphql',
+	apiSource: 'official' as ApiSource,
+	apiUrl: OFFICIAL_API_URL,
 	searchQuery: 'in:inbox',
 	uiOptions: {
 		showLabelsButton: true,

@@ -49,15 +49,40 @@
 
 			<fieldset class="advanced-options">
 				<legend>⚠️ Advanced options</legend>
-				<label>
+				<fieldset class="api-source-group">
+					<legend>API source</legend>
+					<label>
+						<input
+							type="radio"
+							name="api-source"
+							value="official"
+							id="api-source-official"
+							checked
+						/>
+						Official (api-prod.omnivore.app)
+					</label>
+					<label>
+						<input
+							type="radio"
+							name="api-source"
+							value="custom"
+							id="api-source-custom"
+						/>
+						Custom (self-hosted)
+					</label>
+				</fieldset>
+				<label id="api-url-label">
 					Custom Omnivore API URL
-					<small>Only needed if you host your own Omnivore instance</small>
+					<small>Required when using a self-hosted instance</small>
 					<input
 						type="url"
-						placeholder="https://..."
+						placeholder="https://your-host.example.com/api/graphql"
 						id="api-url"
 						name="api-url"
 					/>
+					<small class="error-hint" id="api-url-hint" hidden
+						>Please fill in your self-hosted API URL.</small
+					>
 				</label>
 				<label>
 					Search Query
@@ -72,7 +97,7 @@
 				</label>
 			</fieldset>
 			<div class="footer">
-				<button type="submit">Save</button>
+				<button type="submit" id="save-button">Save</button>
 				<button type="button" class="restore-defaults">Restore defaults</button>
 				<div class="message" id="message" aria-live="polite"></div>
 			</div>

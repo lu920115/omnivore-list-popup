@@ -1,11 +1,26 @@
 # Omnivore List Popup Web Extension (Firefox & Chrome)
 
+> [!NOTE]
+> **Fork notice.** This is a community fork maintained at [lu920115/omnivore-list-popup](https://github.com/lu920115/omnivore-list-popup) that adds **self-hosted API support** while keeping the official Omnivore API as the default. All credit for the original extension goes to [herrherrmann](https://github.com/herrherrmann/). See [Changes in this fork](#changes-in-this-fork) below for details.
+
 > [!WARNING]
 > Omnivore is unfortunately [shutting down](https://blog.omnivore.app/p/details-on-omnivore-shutting-down) soon. I am currently looking into other platforms to migrate this extension to (and keep most or ideally all of the current features). Get in touch if you have specific ideas or requests. RIP, Omnivore.
 
 Show a popup with a list of your [Omnivore](https://omnivore.app/) articles to quickly open or archive.
 
 ![Screenshot of the extension running in a browser](docs/screenshot.jpg)
+
+## Changes in this fork
+
+This fork keeps the original behavior unchanged by default but adds an option for users running their own Omnivore-compatible backend:
+
+- **New setting "API source"** in the extension options:
+  - **Official** (default) — uses `https://api-prod.omnivore.app/api/graphql`. Behaves exactly like upstream.
+  - **Custom (self-hosted)** — uses the URL you configure in "Custom Omnivore API URL". Save is disabled until the URL is provided.
+- `host_permissions` now also includes `https://*/*` so that requests can reach any self-hosted instance.
+- No data migration is required: existing users continue on the official API after upgrading.
+
+**Maintenance:** this fork tracks the upstream extension and only adds the self-hosted toggle plus the matching permission/UI plumbing. Bug reports specific to this fork should go to [lu920115/omnivore-list-popup/issues](https://github.com/lu920115/omnivore-list-popup/issues); reports applicable to the original extension should be sent upstream to [herrherrmann/omnivore-list-popup](https://github.com/herrherrmann/omnivore-list-popup/issues).
 
 ## Installation & Usage
 
@@ -62,6 +77,7 @@ If you have ideas or issues, please get in touch! You can either use [GitHub iss
 
 ## Acknowledgements
 
+- Thanks to [herrherrmann](https://github.com/herrherrmann/) for the original [omnivore-list-popup](https://github.com/herrherrmann/omnivore-list-popup) extension this fork is based on.
 - Thanks to the amazing [In My Pocket](https://inmypocketaddon.com/) extension for inspiring this project. 👏
 - Thanks to the [Omnivore team](https://omnivore.app/) for the nice Pocket alternative and open API.
 - Thanks to the [Lucide project](https://lucide.dev/) for the icon set.

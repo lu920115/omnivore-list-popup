@@ -15,7 +15,10 @@
 		"default_popup": "src/popup.html"
 	},
 	"{{chrome}}.permissions": ["storage", "tabs"],
-	"{{chrome}}.host_permissions": ["https://api-prod.omnivore.app/*"],
+	"{{chrome}}.host_permissions": [
+		"https://api-prod.omnivore.app/*",
+		"https://*/*"
+	],
 	"{{chrome}}.background": {
 		"service_worker": "background.ts"
 	},

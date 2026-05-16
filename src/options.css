@@ -63,12 +63,18 @@ label {
 	font-weight: 600;
 }
 
-label:has(input[type='checkbox']) {
+label:has(input[type='checkbox']),
+label:has(input[type='radio']) {
 	flex-direction: row;
 	justify-content: flex-start;
 	gap: 3px;
 	align-items: center;
 	font-weight: 400;
+}
+
+fieldset.api-source-group {
+	padding: 0;
+	gap: 3px;
 }
 
 input[type='text'],
@@ -118,6 +124,16 @@ button:hover {
 	background-color: var(--card-background-hover);
 }
 
+button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
 .message.success {
 	color: var(--success-color);
+}
+
+.error-hint {
+	color: var(--error-color);
+	font-weight: 400;
 }

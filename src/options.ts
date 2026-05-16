@@ -1,4 +1,6 @@
 import {
+	ApiSource,
+	OFFICIAL_API_URL,
 	SettingKey,
 	UiOptions,
 	defaultSettings,
@@ -15,7 +17,14 @@ const inputSelectors = {
 	showDeleteButton: '#show-delete-button',
 }
 
+const apiSourceRadios = 'input[name="api-source"]'
+const apiUrlLabelSelector = '#api-url-label'
+const apiUrlHintSelector = '#api-url-hint'
+const saveButtonSelector = '#save-button'
+
 async function initialize() {
+	const apiSource = (await loadSetting('apiSource')) as ApiSource
+	setApiSource(apiSource)
 	await restoreInput('apiUrl', inputSelectors.apiUrl)
 	const apiKey = await restoreInput('apiKey', inputSelectors.apiKey)
 	validateInput(apiKey, inputSelectors.apiKey)
@@ -32,10 +41,51 @@ async function initialize() {
 		inputSelectors.showDeleteButton,
 		'showDeleteButton',
 	)
+	revalidateApiSource()
 }
 
 function getInput(selector: string) {
 	return document.querySelector<HTMLInputElement>(selector)!
+}
+
+function getApiSourceRadios() {
+	return Array.from(
+		document.querySelectorAll<HTMLInputElement>(apiSourceRadios),
+	)
+}
+
+function getSelectedApiSource(): ApiSource {
+	const checked = getApiSourceRadios().find((radio) => radio.checked)
+	return (checked?.value as ApiSource) || 'official'
+}
+
+function setApiSource(apiSource: ApiSource) {
+	for (const radio of getApiSourceRadios()) {
+		radio.checked = radio.value === apiSource
+	}
+	syncApiUrlVisibility()
+}
+
+function syncApiUrlVisibility() {
+	const apiSource = getSelectedApiSource()
+	const apiUrlLabel = document.querySelector<HTMLLabelElement>(
+		apiUrlLabelSelector,
+	)!
+	const apiUrlInput = getInput(inputSelectors.apiUrl)
+	const isCustom = apiSource === 'custom'
+	apiUrlLabel.hidden = !isCustom
+	apiUrlInput.disabled = !isCustom
+}
+
+function revalidateApiSource() {
+	const apiSource = getSelectedApiSource()
+	const apiUrl = getInput(inputSelectors.apiUrl).value.trim()
+	const saveButton =
+		document.querySelector<HTMLButtonElement>(saveButtonSelector)!
+	const hint = document.querySelector<HTMLElement>(apiUrlHintSelector)!
+	const missingCustomUrl = apiSource === 'custom' && !apiUrl
+	saveButton.disabled = missingCustomUrl
+	hint.hidden = !missingCustomUrl
 }
 
 async function restoreInput(settingKey: SettingKey, inputSelector: string) {
@@ -63,8 +113,18 @@ function validateInput(settingValue: string, inputSelector: string) {
 
 async function saveOptions(event: SubmitEvent) {
 	event.preventDefault()
-	const apiUrl = getInput(inputSelectors.apiUrl).value
-	await saveSetting('apiUrl', apiUrl)
+	const apiSource = getSelectedApiSource()
+	const apiUrlInput = getInput(inputSelectors.apiUrl)
+	const apiUrl = apiUrlInput.value.trim()
+	if (apiSource === 'custom' && !apiUrl) {
+		revalidateApiSource()
+		return
+	}
+	await saveSetting('apiSource', apiSource)
+	await saveSetting(
+		'apiUrl',
+		apiSource === 'custom' ? apiUrl : OFFICIAL_API_URL,
+	)
 	const apiKey = getInput(inputSelectors.apiKey).value
 	await saveSetting('apiKey', apiKey)
 	validateInput(apiKey, inputSelectors.apiKey)
@@ -94,6 +154,21 @@ document
 	.querySelector<HTMLFormElement>('form')!
 	.addEventListener('submit', saveOptions)
 
+document.addEventListener('change', (event) => {
+	const element = event.target as HTMLElement
+	if (element instanceof HTMLInputElement && element.name === 'api-source') {
+		syncApiUrlVisibility()
+		revalidateApiSource()
+	}
+})
+
+document.addEventListener('input', (event) => {
+	const element = event.target as HTMLElement
+	if (element instanceof HTMLInputElement && element.id === 'api-url') {
+		revalidateApiSource()
+	}
+})
+
 document.addEventListener('click', async (event) => {
 	const element = event.target as HTMLElement
 	if (element.tagName !== 'BUTTON') {
@@ -104,5 +179,7 @@ document.addEventListener('click', async (event) => {
 		searchQueryInput.value = defaultSettings.searchQuery
 		const apiUrlInput = getInput(inputSelectors.apiUrl)
 		apiUrlInput.value = defaultSettings.apiUrl
+		setApiSource(defaultSettings.apiSource)
+		revalidateApiSource()
 	}
 })

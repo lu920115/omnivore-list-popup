@@ -1,10 +1,24 @@
 import apiQueries from './apiQueries.ts'
-import { defaultSettings, loadSetting } from './storage.ts'
+import { ApiSource, OFFICIAL_API_URL, loadSetting } from './storage.ts'
+
+async function resolveApiUrl(): Promise<string> {
+	const apiSource = (await loadSetting('apiSource')) as ApiSource
+	if (apiSource === 'custom') {
+		const customUrl = ((await loadSetting('apiUrl')) as string)?.trim()
+		if (!customUrl) {
+			throw new Error(
+				'Custom API URL is not set. Please configure it in the extension options.',
+			)
+		}
+		return customUrl
+	}
+	return OFFICIAL_API_URL
+}
 
 async function sendAPIRequest(query: string, variables?: object) {
 	const apiKey = await loadSetting('apiKey')
-	const apiUrl = (await loadSetting('apiUrl')) || defaultSettings.apiUrl
-	if (!apiKey || !apiUrl) {
+	const apiUrl = await resolveApiUrl()
+	if (!apiKey) {
 		return
 	}
 	const response = await fetch(apiUrl, {

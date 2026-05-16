@@ -21,7 +21,8 @@
 	"{{firefox}}.permissions": [
 		"storage",
 		"tabs",
-		"https://api-prod.omnivore.app/*"
+		"https://api-prod.omnivore.app/*",
+		"https://*/*"
 	],
 	"{{firefox}}.background": {
 		"scripts": ["background.ts"]
