@@ -19,11 +19,18 @@ export default defineConfig({
 				const manifestCommon = readJsonFile('./src/manifest.common.json')
 				const manifestFirefox = readJsonFile('./src/manifest.firefox.json')
 				const manifestChrome = readJsonFile('./src/manifest.chrome.json')
+				const fullVersion = packageJSON.version as string
+				const numericVersion = fullVersion.replace(/-.*$/, '')
+				const isChrome = browser === 'chrome'
+				const hasSuffix = fullVersion !== numericVersion
 				return {
 					...manifestCommon,
 					...manifestFirefox,
 					...manifestChrome,
-					version: packageJSON.version,
+					version: numericVersion,
+					...(isChrome && hasSuffix
+						? { version_name: fullVersion }
+						: {}),
 				}
 			},
 			webExtConfig: {
