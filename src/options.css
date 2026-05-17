@@ -31,8 +31,13 @@ body {
 form {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
+	align-items: stretch;
 	gap: 15px;
+	width: 100%;
+}
+
+form > label {
+	width: 100%;
 }
 
 fieldset {
@@ -92,7 +97,6 @@ input[type='url'] {
 }
 
 input#api-key {
-	min-width: calc(36ch + 2 * var(--padding) + 2px);
 	font-family: var(--font-family-mono);
 }
 
