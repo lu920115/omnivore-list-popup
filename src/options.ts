@@ -322,9 +322,8 @@ async function saveOptions(event: SubmitEvent) {
 	messageElement.classList.add('success')
 	messageElement.textContent = 'Saved!'
 	setTimeout(() => {
-		messageElement.textContent = ''
-		messageElement.classList.remove('success')
-	}, 2_000)
+		window.close()
+	}, 500)
 }
 
 document.addEventListener('DOMContentLoaded', initialize)
