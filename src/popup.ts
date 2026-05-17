@@ -7,6 +7,7 @@ import {
 import { addLink, loadItems, loadLabels } from './services/api.ts'
 import {
 	UiOptions,
+	defaultSettings,
 	loadLocal,
 	loadSetting,
 	saveLocal,
@@ -24,7 +25,25 @@ let currentPage = 1
 async function initialize() {
 	currentPage = 1
 	showState('loading')
+	await updateDynamicLinks()
 	await reloadItems()
+}
+
+async function updateDynamicLinks() {
+	const webUiUrl = (await loadSetting('webUiUrl')) as string
+	const baseUrl = (webUiUrl || defaultSettings.webUiUrl).replace(/\/$/, '')
+	// Update "Open Omnivore" button behavior
+	const openOmnivoreBtn = document.querySelector('.open-omnivore')
+	if (openOmnivoreBtn) {
+		openOmnivoreBtn.setAttribute('data-webui-url', baseUrl)
+	}
+	// Update "Manage labels" link
+	const manageLabelsLink = document.querySelector<HTMLAnchorElement>(
+		'#labels-modal a[href*="/settings/labels"]',
+	)
+	if (manageLabelsLink) {
+		manageLabelsLink.href = `${baseUrl}/settings/labels`
+	}
 }
 
 async function reloadItems() {
@@ -122,7 +141,8 @@ document.addEventListener('click', async (event) => {
 		setLoadingState(false)
 	}
 	if (element.classList.contains('open-omnivore')) {
-		openTab('https://omnivore.app/')
+		const webUiUrl = element.getAttribute('data-webui-url') || 'https://omnivore.app'
+		openTab(webUiUrl)
 		window.close()
 	}
 	if (element.classList.contains('open-settings')) {

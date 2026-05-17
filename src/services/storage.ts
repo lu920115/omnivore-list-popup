@@ -10,7 +10,8 @@ export const defaultSettings = {
 	apiKey: '',
 	apiSource: 'official' as ApiSource,
 	apiUrl: OFFICIAL_API_URL,
-	searchQuery: 'in:inbox',
+	webUiUrl: 'https://omnivore.app',
+	searchQuery: 'in:inbox is:unread sort:saved',
 	uiOptions: {
 		showLabelsButton: true,
 		showArchiveButton: true,

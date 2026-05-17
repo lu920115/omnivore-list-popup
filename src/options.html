@@ -12,11 +12,22 @@
 			<label>
 				Omnivore API Key
 				<small>
-					<a href="https://omnivore.app/settings/api" target="_blank"
-						>Get it on Omnivore</a
+					<a id="api-key-link" href="https://omnivore.app/settings/api" target="_blank"
+						>获取自托管 API key</a
 					>
 				</small>
 				<input type="text" id="api-key" name="api-key" />
+			</label>
+
+			<label>
+				Web UI URL
+				<small>Your self-hosted Omnivore web interface address</small>
+				<input
+					type="url"
+					placeholder="https://your-host.example.com"
+					id="web-ui-url"
+					name="web-ui-url"
+				/>
 			</label>
 
 			<fieldset>
@@ -48,7 +59,7 @@
 			</fieldset>
 
 			<fieldset class="advanced-options">
-				<legend>⚠️ Advanced options</legend>
+				<legend>Advanced options</legend>
 				<fieldset class="api-source-group">
 					<legend>API source</legend>
 					<label>
@@ -80,21 +91,225 @@
 						id="api-url"
 						name="api-url"
 					/>
+					<div class="test-row">
+						<button type="button" id="test-api-url">Test</button>
+						<small class="test-result" id="test-result" hidden></small>
+					</div>
 					<small class="error-hint" id="api-url-hint" hidden
 						>Please fill in your self-hosted API URL.</small
 					>
 				</label>
-				<label>
-					Search Query
-					<small>
-						<a
-							href="https://docs.omnivore.app/using/search.html"
-							target="_blank"
-							>More info on search queries</a
-						>
-					</small>
-					<input type="text" id="search-query" name="search-query" />
-				</label>
+				<div class="search-query-section">
+					<label>
+						Search Query
+						<small>
+							<a
+								href="https://github.com/lu920115/omnivore-list-popup/blob/main/docs/search-queries.md"
+								target="_blank"
+								>More info on search queries</a
+							>
+						</small>
+						<input type="text" id="search-query" name="search-query" />
+					</label>
+
+					<fieldset class="search-filters">
+						<legend>Search filters</legend>
+
+						<div class="filter-group">
+							<div class="filter-group-title">Archive status</div>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="in-filter"
+									value="in:inbox"
+									checked
+								/>
+								<span class="filter-value">in:inbox</span>
+								<span class="filter-desc">收件箱（未归档，默认）</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="in-filter"
+									value="in:archive"
+								/>
+								<span class="filter-value">in:archive</span>
+								<span class="filter-desc">已归档</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="in-filter"
+									value="in:all"
+								/>
+								<span class="filter-value">in:all</span>
+								<span class="filter-desc">全部</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="in-filter"
+									value="in:trash"
+								/>
+								<span class="filter-value">in:trash</span>
+								<span class="filter-desc">回收站</span>
+							</label>
+						</div>
+
+						<div class="filter-group">
+							<div class="filter-group-title">Read state</div>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="is-filter"
+									value="is:unread"
+									checked
+								/>
+								<span class="filter-value">is:unread</span>
+								<span class="filter-desc">未读（默认）</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="is-filter"
+									value="is:read"
+								/>
+								<span class="filter-value">is:read</span>
+								<span class="filter-desc">已读</span>
+							</label>
+						</div>
+
+						<div class="filter-group">
+							<div class="filter-group-title">Content type</div>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="type-filter"
+									value="type:article"
+								/>
+								<span class="filter-value">type:article</span>
+								<span class="filter-desc">文章</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="type-filter"
+									value="type:pdf"
+								/>
+								<span class="filter-value">type:pdf</span>
+								<span class="filter-desc">PDF</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="type-filter"
+									value="type:file"
+								/>
+								<span class="filter-value">type:file</span>
+								<span class="filter-desc">文件</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="type-filter"
+									value="type:highlights"
+								/>
+								<span class="filter-value">type:highlights</span>
+								<span class="filter-desc">高亮笔记</span>
+							</label>
+						</div>
+
+						<div class="filter-group">
+							<div class="filter-group-title">Sort by</div>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="sort-filter"
+									value="sort:saved"
+									checked
+								/>
+								<span class="filter-value">sort:saved</span>
+								<span class="filter-desc">保存日期（默认）</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="sort-filter"
+									value="sort:updated"
+								/>
+								<span class="filter-value">sort:updated</span>
+								<span class="filter-desc">更新时间</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="sort-filter"
+									value="sort:score"
+								/>
+								<span class="filter-value">sort:score</span>
+								<span class="filter-desc">相关性</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="sort-filter"
+									value="sort:wordsCount"
+								/>
+								<span class="filter-value">sort:wordsCount</span>
+								<span class="filter-desc">字数/阅读时长</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="sort-filter"
+									value="sort:saved-asc"
+								/>
+								<span class="filter-value">sort:saved-asc</span>
+								<span class="filter-desc">保存日期升序（旧→新）</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="sort-filter"
+									value="sort:updated-des"
+								/>
+								<span class="filter-value">sort:updated-des</span>
+								<span class="filter-desc">更新时间降序（新→旧）</span>
+							</label>
+						</div>
+
+						<div class="filter-group">
+							<div class="filter-group-title">Other</div>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="other-filter"
+									value="has:highlights"
+								/>
+								<span class="filter-value">has:highlights</span>
+								<span class="filter-desc">仅显示含高亮的项目</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="other-filter"
+									value="language:chinese"
+								/>
+								<span class="filter-value">language:chinese</span>
+								<span class="filter-desc">中文内容</span>
+							</label>
+							<label class="filter-option">
+								<input
+									type="checkbox"
+									name="other-filter"
+									value="language:english"
+								/>
+								<span class="filter-value">language:english</span>
+								<span class="filter-desc">英文内容</span>
+							</label>
+						</div>
+					</fieldset>
+				</div>
 			</fieldset>
 			<div class="footer">
 				<button type="submit" id="save-button">Save</button>
