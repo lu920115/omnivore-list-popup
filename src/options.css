@@ -138,6 +138,27 @@ button:disabled {
 	font-weight: 400;
 }
 
+.input-with-button {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.input-with-button input {
+	flex: 1;
+	margin-top: 3px;
+}
+
+.input-with-button button {
+	margin-top: 3px;
+	white-space: nowrap;
+}
+
+.webui-save-hint {
+	color: var(--success-color);
+	font-weight: 400;
+}
+
 .test-row {
 	display: flex;
 	gap: 8px;

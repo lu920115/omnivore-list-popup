@@ -346,9 +346,6 @@ document.addEventListener('input', (event) => {
 		revalidateApiSource()
 		hideTestResult()
 	}
-	if (element instanceof HTMLInputElement && element.id === 'web-ui-url') {
-		updateApiKeyLink()
-	}
 })
 
 document.addEventListener('change', (event) => {
@@ -397,5 +394,15 @@ document.addEventListener('click', async (event) => {
 	}
 	if (element.id === 'test-api-url') {
 		await testApiUrl()
+	}
+	if (element.id === 'save-web-ui-url') {
+		const webUiUrl = getInput(inputSelectors.webUiUrl).value.trim()
+		await saveSetting('webUiUrl', webUiUrl || defaultSettings.webUiUrl)
+		updateApiKeyLink()
+		const hint = document.querySelector<HTMLElement>('#webui-save-hint')!
+		hint.hidden = false
+		setTimeout(() => {
+			hint.hidden = true
+		}, 2_000)
 	}
 })
