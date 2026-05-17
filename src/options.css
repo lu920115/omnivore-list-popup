@@ -68,6 +68,12 @@ label {
 	font-weight: 600;
 }
 
+label:has(> input[type='text']),
+label:has(> input[type='url']) {
+	display: flex;
+	width: 100%;
+}
+
 label:has(input[type='checkbox']),
 label:has(input[type='radio']) {
 	flex-direction: row;
