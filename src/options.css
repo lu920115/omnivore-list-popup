@@ -82,7 +82,6 @@ input[type='url'] {
 	--padding: 6px;
 	display: block;
 	width: 100%;
-	max-width: 320px;
 	padding: var(--padding);
 	background-color: var(--background-color);
 	border: 1px solid var(--border-color);
